@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    style="@style/Theme.MyDialog"
+    android:padding="10dp" >
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Quanity :"
+            android:id="@+id/quantityTv"
+            style="@style/CustomTextHeadLine"
+            />
+
+        <EditText
+            android:id="@+id/quantityEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="number"
+            style="@style/CustomTextHeadLine"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"></View>
+
+
+    <!--<LinearLayout-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+    <!--android:text="Unit :"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textSize="16sp"-->
+    <!--android:textColor="@color/common_google_signin_btn_text_dark_focused"-->
+    <!--/>-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/edtUnit"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:inputType="number"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:textSize="14sp" />-->
+
+    <!--</LinearLayout>-->
+    <!--<LinearLayout-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/txtDiscountText"-->
+    <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+    <!--android:text="Discount :"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textSize="16sp"-->
+    <!--android:textColor="@color/common_google_signin_btn_text_dark_focused"-->
+    <!--/>-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/txtDiscount"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:inputType="numberDecimal"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:textSize="14sp" />-->
+
+    <!--</LinearLayout>-->
+    <!-- <LinearLayout
+         android:orientation="horizontal"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textAppearance="?android:attr/textAppearanceMedium"
+             android:text="Show In Memo :"
+             android:textStyle="bold"
+             android:textSize="16sp"
+             android:textColor="@color/common_google_signin_btn_text_dark_focused"
+              />
+
+         <EditText
+             android:id="@+id/txtDiscount"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:inputType="number"
+             android:layout_marginLeft="5dp"
+             android:textSize="14sp" />
+
+     </LinearLayout>-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"></View>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Total :"
+            style="@style/CustomTextHeadLine" />
+
+        <TextView
+            android:id="@+id/totalTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_marginLeft="5dp"
+            android:textSize="18sp"
+            style="@style/CustomTextHeadLine" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"></View>
+
+</LinearLayout>
