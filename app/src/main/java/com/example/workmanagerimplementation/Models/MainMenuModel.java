@@ -5,8 +5,8 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.example.workmanagerimplementation.Models.Pojo.MainMenu;
-import com.example.workmanagerimplementation.data.DBHandler;
-import com.example.workmanagerimplementation.data.DataContract;
+import com.example.workmanagerimplementation.SyncUtils.data.DBHandler;
+import com.example.workmanagerimplementation.SyncUtils.data.DataContract;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

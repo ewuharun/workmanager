@@ -1,4 +1,4 @@
-package com.example.workmanagerimplementation.data;
+package com.example.workmanagerimplementation.SyncUtils.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  */
 public class DataContract {
 
-    public static final String CONTENT_AUTHORITY="com.example.workmanagerimplementation.data";
+    public static final String CONTENT_AUTHORITY="com.example.workmanagerimplementation.SyncUtils.data";
     public static final Uri BASE_CONTENT_URI=Uri.parse("content://"+CONTENT_AUTHORITY);
 
 

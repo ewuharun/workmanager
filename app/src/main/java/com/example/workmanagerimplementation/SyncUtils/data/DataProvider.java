@@ -1,4 +1,4 @@
-package com.example.workmanagerimplementation.data;
+package com.example.workmanagerimplementation.SyncUtils.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

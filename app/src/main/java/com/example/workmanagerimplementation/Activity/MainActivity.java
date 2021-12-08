@@ -1,8 +1,6 @@
 package com.example.workmanagerimplementation.Activity;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -12,32 +10,31 @@ import androidx.work.WorkManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workmanagerimplementation.Adapter.GridViewAdapter;
+import com.example.workmanagerimplementation.Interface.SyncTable;
 import com.example.workmanagerimplementation.Models.EmployeeModel;
 import com.example.workmanagerimplementation.Models.MainMenuModel;
 import com.example.workmanagerimplementation.Models.Pojo.MainMenu;
 import com.example.workmanagerimplementation.R;
 import com.example.workmanagerimplementation.Session.SessionManager;
 import com.example.workmanagerimplementation.SyncUtils.BackgroundWorkers.DataDownWorker;
-import com.example.workmanagerimplementation.data.DBHandler;
+import com.example.workmanagerimplementation.SyncUtils.SyncActivity;
+import com.example.workmanagerimplementation.SyncUtils.SyncSingleTon;
+import com.example.workmanagerimplementation.SyncUtils.data.DBHandler;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static com.example.workmanagerimplementation.R.id.startSyncBtn;
 
 public class MainActivity extends AppCompatActivity {
     private Button logoutBtn;
@@ -52,18 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     SessionManager sessionManager;
+    TextView btn_sync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dbHandler=new DBHandler(getApplicationContext());
-        db=dbHandler.getWritableDatabase();
-        dbHandler.createTable(db);
-
-
-
 
 
 
@@ -71,13 +62,22 @@ public class MainActivity extends AppCompatActivity {
         loadData();
         syncButtonClicked();
 
+        btn_sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                SyncSingleTon.getInstance().sync("LOGIN_TABLE");
+
+            }
+        });
 
     }
 
 
 
+
     private void syncButtonClicked() {
+        btn_sync = findViewById(R.id.btn_sync);
         startSyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

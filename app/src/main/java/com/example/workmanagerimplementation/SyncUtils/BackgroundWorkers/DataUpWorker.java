@@ -17,7 +17,7 @@ import com.example.workmanagerimplementation.SyncUtils.HelperUtils.DataSyncModel
 import com.example.workmanagerimplementation.SyncUtils.HelperUtils.JsonParser;
 import com.example.workmanagerimplementation.SyncUtils.HelperUtils.Maths;
 import com.example.workmanagerimplementation.NetWorkUtils.NetworkStream;
-import com.example.workmanagerimplementation.data.DataContract;
+import com.example.workmanagerimplementation.SyncUtils.data.DataContract;
 import com.google.gson.Gson;
 
 import org.apache.http.NameValuePair;
