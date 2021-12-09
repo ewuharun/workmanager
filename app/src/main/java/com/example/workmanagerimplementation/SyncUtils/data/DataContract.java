@@ -13,38 +13,12 @@ public class DataContract {
     public static final Uri BASE_CONTENT_URI=Uri.parse("content://"+CONTENT_AUTHORITY);
 
 
-    public static final String PATH_SALES_ORDER="TBL_TODAYS_MIS_MERCHANDISING_FILTER_DATA";
     public static final String PATH_MENU_LIST="Menu_List_Data";
-    public static final String PATH_EMPLOYEE="tbl_test_data";
+    public static final String PATH_TRANSPORTATION_DATA = "TBL_TRANSPORTATION_DATA";
 
 
     public static Uri getUri(String tableName){
         return BASE_CONTENT_URI.buildUpon().appendPath(tableName).build();
-    }
-
-
-    public static class EmployeeEntry implements BaseColumns{
-        public static final Uri CONTENT_URI=BASE_CONTENT_URI.buildUpon().appendPath(PATH_EMPLOYEE).build();
-        public static final String TABLE_NAME="tbl_testdata";
-        public static final String NAME="name";
-        public static final String AGE="age";
-        public static final String PHONE="phone";
-        public static final String EMAIL="email";
-        public static final String COLUMN_ID="column_id";
-        public static final String IS_SYNCED="is_synced";
-    }
-
-    public static class SalesEntry implements BaseColumns{
-        public static final Uri CONTENT_URI=BASE_CONTENT_URI.buildUpon().appendPath(PATH_SALES_ORDER).build();
-        public static final String TABLE_NAME="TBL_TODAYS_MIS_MERCHANDISING_FILTER_DATA";
-        public static final String SALES_ORDER_ID="sales_order_id";
-        public static final String SO_ORACLE_ID="so_oracle_id";
-        public static final String DEALER_NAME="dealer_name";
-        public static final String NAME="name";
-        public static final String ORDER_DATE="order_date";
-        public static final String ORDER_DATE_TIME="order_date_time";
-        public static final String DELIVERY_DATE="delivery_date";
-        public static final String IS_SYNCED="is_synced";
     }
 
     public static class MenuListEntry implements BaseColumns{
@@ -56,7 +30,15 @@ public class DataContract {
         public static final String LOGO="logo";
         public static final String POSITION="position";
         public static final String ROLE_CODE="role_code";
+        public static final String UPDATED_AT="updated_at";
         public static final String IS_SYNCED="is_synced";
+    }
+
+    public static class TblTransportationData implements BaseColumns{
+        public static final Uri CONTENT_URI=BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRANSPORTATION_DATA).build();
+        public static final String TABLE_NAME="TBL_TRANSPORTATION_DATA";
+        public static final String COLUMN_ID="column_id";
+        public static final String NAME="name";
     }
 
 }

@@ -105,42 +105,6 @@ public class LoginActivity extends AppCompatActivity {
         dbHandler.createTable(db);
     }
 
-
-    public void fetchAssetFromServer(String project_title, Asset asset) {
-
-        Data data = new Data.Builder().putString(AssetDownloadWorker.TASK, project_title).build();
-
-        OneTimeWorkRequest assetDownloadRequest = new OneTimeWorkRequest.Builder(AssetDownloadWorker.class)
-                .setInputData(data)
-                .build();
-
-        WorkManager.getInstance().enqueue(assetDownloadRequest);
-
-        WorkManager.getInstance().getWorkInfoByIdLiveData(assetDownloadRequest.getId())
-                .observe(LoginActivity.this, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(WorkInfo workInfo) {
-                        if (workInfo.getState() == WorkInfo.State.RUNNING) {
-                            Toast.makeText(getApplicationContext(), "Running", Toast.LENGTH_SHORT).show();
-                            Log.e("running", "djf");
-                        }
-                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                            Toast.makeText(getApplicationContext(), "Succed", Toast.LENGTH_SHORT).show();
-                            Log.e("succ", "djf");
-                        }
-                        if (workInfo.getState().isFinished()) {
-                            Toast.makeText(getApplicationContext(), "finished", Toast.LENGTH_SHORT).show();
-                            String response = workInfo.getOutputData().getString(AssetDownloadWorker.TASK);
-                            Log.e("finished", response);
-
-                            loadData(response, asset);
-
-                        }
-                    }
-                });
-
-    }
-
     private void loadData(String response, Asset asset) {
         AssetModel assetModel = new AssetModel();
         asset = assetModel.getAssetData(response);
@@ -209,8 +173,13 @@ public class LoginActivity extends AppCompatActivity {
                     if (isNetworkConnected) {
                         sessionManager.saveLoginSession("SR", "12345");
 
-                        Intent intent = new Intent(LoginActivity.this, SyncActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("pageFrom","LoginPage");
                         startActivity(intent);
+
+
+
+
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                         builder.setMessage("You must on your mobile data....");

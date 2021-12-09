@@ -5,10 +5,8 @@ package com.example.workmanagerimplementation.SyncUtils;
  * BABL, Bangladesh,
  */
 public class SyncSingleTon {
-
         private static SyncActivity INSTANCE = null;
         private SyncSingleTon() {};
-
         public static SyncActivity getInstance() {
             if (INSTANCE == null) {
                 INSTANCE = new SyncActivity();

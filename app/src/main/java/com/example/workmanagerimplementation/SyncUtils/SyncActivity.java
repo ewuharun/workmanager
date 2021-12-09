@@ -3,14 +3,11 @@ package com.example.workmanagerimplementation.SyncUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
-import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,13 +16,26 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
-import com.example.workmanagerimplementation.Activity.LoginActivity;
-import com.example.workmanagerimplementation.Interface.SyncTable;
+import com.example.workmanagerimplementation.NetWorkUtils.NetworkStream;
 import com.example.workmanagerimplementation.R;
-import com.example.workmanagerimplementation.SyncUtils.BackgroundWorkers.AssetDownloadWorker;
+import com.example.workmanagerimplementation.SyncUtils.HelperUtils.DataServices;
+import com.example.workmanagerimplementation.SyncUtils.HelperUtils.DataSync;
+import com.example.workmanagerimplementation.SyncUtils.HelperUtils.DataSyncModel;
+import com.example.workmanagerimplementation.SyncUtils.HelperUtils.JsonParser;
+import com.example.workmanagerimplementation.SyncUtils.HelperUtils.Maths;
+import com.example.workmanagerimplementation.SyncUtils.data.DataContract;
+
+import org.apache.http.NameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SyncActivity extends AppCompatActivity implements SyncTable {
-
+    private DataServices dataServices;
+    private String url;
+    private DataSyncModel dataSyncModel;
+    private String table_name;
+    private Context mContext;
 
 
     @Override
@@ -33,8 +43,6 @@ public class SyncActivity extends AppCompatActivity implements SyncTable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
         setupToolbar();
-
-
 
 
     }
@@ -65,14 +73,69 @@ public class SyncActivity extends AppCompatActivity implements SyncTable {
     }
 
     @Override
-    public void sync(String tableName) {
+    public void sync(String tableName, Context context) {
+        table_name = tableName;
+        mContext = context;
 
-        Log.e("TABLE_NAME",tableName);
+        dataServices = new DataServices(context);
+        ArrayList<DataSync> dataUpService = dataServices.dataUpServices();
 
-        syncSingleTable(tableName);
+        String applicationUrl = context.getString(R.string.APPLICATION_URL);
+
+        for (DataSync dataSync : dataUpService) {
+
+            if (tableName.equals(dataSync.getTableName())) {
+
+                Uri uri = DataContract.getUri(dataSync.getTableName());
+
+                url = applicationUrl + dataSync.getServiceUrl();
+
+                String condition = dataSync.getUpdateColumn() + "='0'";
+
+                 dataSyncModel = new DataSyncModel(context.getContentResolver());
+
+                for (ArrayList<NameValuePair> sqliteData : dataSyncModel.getSqliteData(uri, condition)) {
+                    int httpMethod = 2;
+
+                    if (Maths.isInteger(dataSync.getHttpMethod())) {
+                        httpMethod = Integer.parseInt(dataSync.getHttpMethod());
+                    }
+
+                    new UploadTableData().execute(sqliteData);
+
+                }
+
+
+            }
+        }
+
+
     }
 
-    private void syncSingleTable(String tableName) {
+    private class UploadTableData extends AsyncTask<ArrayList<NameValuePair>, Void, String> {
 
+        @Override
+        protected String doInBackground(ArrayList<NameValuePair>... urls) {
+            List<NameValuePair> sqliteData = urls[0];
+
+            String dataPut = new NetworkStream().getStream(url, 2, sqliteData);
+            Log.e("HittedURL====>",url);
+            Log.e("POST====>",dataPut);
+            Log.e("sqliteData ",sqliteData.toString());
+            String columnId = JsonParser.ifValidJSONGetColumnId(dataPut);
+            return columnId;
+        }
+
+        @Override
+        protected void onPostExecute(String columnId) {
+
+            if (columnId != null) {
+                ContentValues values = new ContentValues();
+                values.put("is_synced", 1);
+                mContext.getContentResolver().update(DataContract.getUri(table_name), values, "column_id" + "='" + columnId + "'", null);
+            }
+        }
     }
+
+
 }

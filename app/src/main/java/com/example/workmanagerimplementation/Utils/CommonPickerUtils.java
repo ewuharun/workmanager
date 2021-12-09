@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.workmanagerimplementation.R;
 
@@ -156,23 +158,21 @@ public class CommonPickerUtils {
 
     }
 
-    public static AlertDialog showAlertMessage(Context mContext, Activity mActivity, String title, String message) {
+    public static AlertDialog.Builder showAlertMessage(Context mContext, String title, String message) {
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(mActivity, R.style.Theme_AppCompat);
+        builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setCancelable(true);
+        builder.setMessage(message);
 
-        builder.setTitle(Html.fromHtml("<font color='#11BA1F'>" + title + "</font>"))
-                .setMessage(Html.fromHtml("<font color='#11BA1F'>" + message + "</font>"))
-                .setCancelable(true)
-                .setPositiveButton(Html.fromHtml("<font color='#11BA1F'>OK</font>"), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(mContext, "hdhf", Toast.LENGTH_SHORT).show();
+            }
+        });
         builder.show();
-        return dialog;
-
+        return builder;
     }
 
     public static void showAlertMessageWithCancel(Context mContext, Activity mActivity, String title, String message) {
@@ -231,7 +231,9 @@ public class CommonPickerUtils {
         // Set up progress before call
         final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(mContext);
+        progressDoalog.setCancelable(false);
         progressDoalog.setMax(100);
+        progressDoalog.setTitle(title);
         progressDoalog.setMessage(message);
 
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

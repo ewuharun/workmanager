@@ -21,6 +21,7 @@ public class DataProvider extends ContentProvider {
 
     static final int SALES_ORDER=103;
     static final int GET_MENU_LIST=104;
+    static final int GET_TRANSPORTATION_DATA = 105;
 
 
     private static final UriMatcher sUriMatcher=buildUriMatcher();
@@ -30,8 +31,8 @@ public class DataProvider extends ContentProvider {
         final UriMatcher matcher=new UriMatcher(UriMatcher.NO_MATCH);
         final String authority=DataContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority,DataContract.PATH_SALES_ORDER,SALES_ORDER);
         matcher.addURI(authority,DataContract.PATH_MENU_LIST,GET_MENU_LIST);
+        matcher.addURI(authority,DataContract.PATH_TRANSPORTATION_DATA,GET_TRANSPORTATION_DATA);
         return matcher;
 
     }
@@ -51,8 +52,9 @@ public class DataProvider extends ContentProvider {
         int uriType=sUriMatcher.match(uri);
 
         switch (uriType){
-            case SALES_ORDER:
-                queryBuilder.setTables(DataContract.SalesEntry.TABLE_NAME);
+
+            case GET_TRANSPORTATION_DATA:
+                queryBuilder.setTables(DataContract.TblTransportationData.TABLE_NAME);
                 break;
             case GET_MENU_LIST:
                 queryBuilder.setTables(DataContract.MenuListEntry.TABLE_NAME);
@@ -81,8 +83,8 @@ public class DataProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)){
 
-            case SALES_ORDER:
-                id=writableDb.insert(DataContract.SalesEntry.TABLE_NAME,null,values);
+            case GET_TRANSPORTATION_DATA:
+                id=writableDb.insert(DataContract.TblTransportationData.TABLE_NAME,null,values);
                 break;
             case GET_MENU_LIST:
                 id=writableDb.insert(DataContract.MenuListEntry.TABLE_NAME,null,values);
@@ -103,8 +105,8 @@ public class DataProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)){
 
-            case SALES_ORDER:
-                count=writableDb.delete(DataContract.SalesEntry.TABLE_NAME,selection,selectionArgs);
+            case GET_TRANSPORTATION_DATA:
+                count=writableDb.delete(DataContract.TblTransportationData.TABLE_NAME,selection,selectionArgs);
                 break;
             case GET_MENU_LIST:
                 count=writableDb.delete(DataContract.MenuListEntry.TABLE_NAME,selection,selectionArgs);
@@ -122,8 +124,8 @@ public class DataProvider extends ContentProvider {
         SQLiteDatabase writableDb=db.getWritableDatabase();
         switch (sUriMatcher.match(uri)){
 
-            case SALES_ORDER:
-                count=writableDb.update(DataContract.SalesEntry.TABLE_NAME,values,selection,selectionArgs);
+            case GET_TRANSPORTATION_DATA:
+                count=writableDb.update(DataContract.TblTransportationData.TABLE_NAME,values,selection,selectionArgs);
                 break;
             case GET_MENU_LIST:
                 count=writableDb.update(DataContract.MenuListEntry.TABLE_NAME,values,selection,selectionArgs);

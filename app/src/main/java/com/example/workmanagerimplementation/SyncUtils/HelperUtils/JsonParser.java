@@ -77,8 +77,6 @@ public class JsonParser {
             }
         }
 
-        Log.e("DataHas",new Gson().toJson(dataMap));
-
         return dataMap;
     }
 
@@ -104,6 +102,7 @@ public class JsonParser {
                         String single_column_name = (String) iterator.next();
                         String column_val = dataRows.getString(single_column_name).toString();
                         mNewValues.put(single_column_name, column_val);
+                        mNewValues.put("is_synced","0");
                     }
                     valueList.put(column_id , mNewValues);
                 }

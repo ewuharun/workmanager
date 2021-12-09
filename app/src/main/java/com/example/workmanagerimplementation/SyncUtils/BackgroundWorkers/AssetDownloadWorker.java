@@ -58,8 +58,6 @@ public class AssetDownloadWorker extends Worker {
         Log.e("project title",new Gson().toJson(param));
         String response= new NetworkAsset().getStream(url,2,param);
         Log.e("Response",response);
-
-
         return response;
     }
 }

@@ -9,5 +9,10 @@
             android:icon="@drawable/ic_sync"
             app:showAsAction="always"
             android:title="Sync"/>
+
+        <item
+            android:id="@+id/syncHistory"
+            android:icon="@drawable/ic_sync"
+            android:title="Sync History"/>
     </group>
 </menu>

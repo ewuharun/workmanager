@@ -1,17 +1,19 @@
 package com.example.workmanagerimplementation.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,20 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workmanagerimplementation.Adapter.GridViewAdapter;
-import com.example.workmanagerimplementation.Interface.SyncTable;
 import com.example.workmanagerimplementation.Models.EmployeeModel;
 import com.example.workmanagerimplementation.Models.MainMenuModel;
 import com.example.workmanagerimplementation.Models.Pojo.MainMenu;
 import com.example.workmanagerimplementation.R;
 import com.example.workmanagerimplementation.Session.SessionManager;
-import com.example.workmanagerimplementation.SyncUtils.BackgroundWorkers.DataDownWorker;
-import com.example.workmanagerimplementation.SyncUtils.SyncActivity;
 import com.example.workmanagerimplementation.SyncUtils.SyncSingleTon;
 import com.example.workmanagerimplementation.SyncUtils.data.DBHandler;
+import com.example.workmanagerimplementation.Utils.NetworkUtils;
+import com.example.workmanagerimplementation.ViewModel.MainActivityViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private Button logoutBtn;
@@ -50,58 +50,60 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
     TextView btn_sync;
+    private ProgressDialog syncDialog;
+    private MainActivityViewModel mainActivityViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
+        setupToolbar();
         initVariables();
-        loadData();
-        syncButtonClicked();
+        String pageFrom = getIntent().getStringExtra("pageFrom");
 
+
+        //Data Sync Loader For The Very First Time (While User Logged In).
+        if(pageFrom!=null){
+            if(pageFrom.equals("LoginPage")){
+                if(mainActivityViewModel.isUserLoggedIn()){
+                    mainActivityViewModel.sync(MainActivity.this);
+                }
+            }
+        }
         btn_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SyncSingleTon.getInstance().sync("LOGIN_TABLE");
+                if(NetworkUtils.getConnectivityStatus(getApplicationContext())!=0){
+                    //pass data to server
+                    SyncSingleTon.getInstance().sync("Menu_List_Data", MainActivity.this);
+                }
 
             }
         });
 
     }
 
-
-
-
-    private void syncButtonClicked() {
-        btn_sync = findViewById(R.id.btn_sync);
-        startSyncBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                startSyncBtn.setVisibility(View.GONE);
-
-
-                SyncData();
-                onStart();
-
-            }
-        });
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        toolbar.setTitle("HOME");
+        setSupportActionBar(toolbar);
     }
 
-    private void loadData(){
-        MainMenuModel mainMenuModel=new MainMenuModel(getContentResolver());
-        ArrayList<MainMenu> mainMenuArrayList=new ArrayList<MainMenu>();
 
-        mainMenuArrayList=mainMenuModel.getAllMenuList("SR");
+    private void loadData() {
+        MainMenuModel mainMenuModel = new MainMenuModel(getContentResolver());
+        ArrayList<MainMenu> mainMenuArrayList = new ArrayList<MainMenu>();
+
+//        mainMenuArrayList = mainMenuModel.getAllMenuList("SR");
+        mainMenuArrayList = new ArrayList<>();
         mainMenuModel.sort(mainMenuArrayList);
 
-        Log.e("ALLItem",new Gson().toJson(mainMenuModel.readAllItems()));
+        Log.e("ALLItem", new Gson().toJson(mainMenuModel.readAllItems()));
 
-        gridViewAdapter=new GridViewAdapter(getApplicationContext(),mainMenuArrayList);
+        gridViewAdapter = new GridViewAdapter(getApplicationContext(), mainMenuArrayList);
         gridView.setAdapter(gridViewAdapter);
         menuAction(gridView);
     }
@@ -111,27 +113,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                MainMenu mainMenu= (MainMenu) gridView.getItemAtPosition(position);
+                MainMenu mainMenu = (MainMenu) gridView.getItemAtPosition(position);
 
 
                 //Toast.makeText(getApplicationContext(),mainMenu.getMenuTitle(), Toast.LENGTH_SHORT).show();
 
-                String title=mainMenu.getMenuTitle();
+                String title = mainMenu.getMenuTitle();
 
-                switch (title){
+                switch (title) {
                     case "profile_icon":
                         Toast.makeText(MainActivity.this, "Profile Icon", Toast.LENGTH_SHORT).show();
                         break;
-                    case  "verify_retailer":
+                    case "verify_retailer":
                         Toast.makeText(MainActivity.this, "Verify_Retailer", Toast.LENGTH_SHORT).show();
                         break;
                     case "todays_route":
-                        Intent todaysIntent=new Intent(MainActivity.this,TodaysRouteActivity.class);
+                        Intent todaysIntent = new Intent(MainActivity.this, TodaysRouteActivity.class);
                         startActivity(todaysIntent);
                         break;
                     case "logout":
                         sessionManager.delteSession();
-                        Intent logout=new Intent(MainActivity.this,LoginActivity.class);
+                        Intent logout = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(logout);
                         finish();
                         break;
@@ -145,60 +147,43 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void SyncData() {
-        Data dataDown=new Data.Builder()
-                .putString(DataDownWorker.TASK_DESC,String.valueOf(new Date().getTime()))
-                .build();
-        final OneTimeWorkRequest dataDownWorkRequest=new OneTimeWorkRequest.Builder(DataDownWorker.class)
-                .setInputData(dataDown)
-                //.setConstraints(constraints)
-                .build();
-        WorkManager.getInstance().enqueue(dataDownWorkRequest);
-        //observ the status of the background work done by WorkManager
-        WorkManager.getInstance().getWorkInfoByIdLiveData(dataDownWorkRequest.getId())
-                .observe(MainActivity.this, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(WorkInfo workInfo) {
 
-                        if(workInfo.getState()==WorkInfo.State.RUNNING){
-                            Toast.makeText(MainActivity.this, "Running", Toast.LENGTH_SHORT).show();
-                        }
-                        if (workInfo.getState()==WorkInfo.State.SUCCEEDED){
-                            startSyncBtn.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            Log.e("EndTime",String.valueOf(new Date().getTime()));
-                        }
 
-                        workStatusTv.setText(workInfo.getState().name()+"\n");
-
-                        //Receiving the Data Back
-                        if(workInfo!=null && workInfo.getState().isFinished()){
-
-                            loadData();
-                            //workStatusTv.setText(workInfo.getOutputData().getString(DataDownWorker.TASK_DESC));
-                            //Log.e("none",workInfo.getOutputData().getString(DataUpWorker.TASK_DESC));
-                        }
-                    }
-                });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this, "MainActivity", Toast.LENGTH_SHORT).show();
-    }
 
     private void initVariables() {
-        workStatusTv=(TextView) findViewById(R.id.workStatusTv);
-        sessionManager=new SessionManager(getApplicationContext());
-        gridView=findViewById(R.id.gridView);
+        workStatusTv = findViewById(R.id.workStatusTv);
+        sessionManager = new SessionManager(getApplicationContext());
+        gridView = findViewById(R.id.gridView);
 
-        startSyncBtn=findViewById(R.id.startSyncBtn);
-        progressBar=findViewById(R.id.progresBtn);
+        btn_sync = findViewById(R.id.btnSync);
+        mainActivityViewModel = ViewModelProviders.of(MainActivity.this).get(MainActivityViewModel.class);
+
+
     }
 
     @Override
     public void onBackPressed() {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sync_menu_toolbar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.btn_sync:
+                mainActivityViewModel.sync(MainActivity.this);
+                return true;
+            case R.id.syncHistory:
+                startActivity(new Intent(MainActivity.this,SyncDataLogActivity.class));
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
 }

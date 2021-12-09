@@ -15,10 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkManagerImplementation"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SyncUtils.SyncActivity"></activity>
+        <activity android:name=".SyncUtils.SyncActivity" />
         <activity android:name=".Activity.SalesOrderActivity" />
         <activity android:name=".Activity.todaysOutLetActivity" />
         <activity android:name=".Activity.TodaysRouteActivity" />
+        <activity android:name=".Activity.SyncDataLogActivity" />
         <activity android:name=".Activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

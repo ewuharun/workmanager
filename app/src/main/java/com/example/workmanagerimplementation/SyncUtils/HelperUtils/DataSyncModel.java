@@ -27,20 +27,19 @@ public class DataSyncModel {
     }
 
     public HashMap<String, String> getUniqueColumn(Uri uri, String uniqueColumnName, String condition) {
-        Log.e("uni",uniqueColumnName);
         HashMap<String, String> uniqueColumn = new HashMap<>();
         String[] projection = {
                 uniqueColumnName,
         };
         Cursor cursor = contentResolver.query(uri, projection, condition, null, null);
-        Log.e("cursor",new Gson().toJson(cursor));
-        if (cursor.moveToFirst()) {
-            do {
-                uniqueColumn.put(cursor.getString(0), cursor.getString(0));
-            } while (cursor.moveToNext());
+        if(cursor!=null){
+            if (cursor.moveToFirst()) {
+                do {
+                    uniqueColumn.put(cursor.getString(0), cursor.getString(0));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-        cursor.close();
-        Log.e("Hashmap unique",new Gson().toJson(uniqueColumn));
         return uniqueColumn;
     }
 
@@ -51,18 +50,18 @@ public class DataSyncModel {
 
         ArrayList<ArrayList<NameValuePair>> data=new ArrayList<>();
 
-        if(cursor.moveToFirst()){
-            do {
-                ArrayList<NameValuePair> dataColumn = new ArrayList<NameValuePair>();
-                for (int i = 0; i < cursor.getColumnCount(); i++) {
-                    dataColumn.add(new BasicNameValuePair(cursor.getColumnName(i), cursor.getString(i)));
-                }
-                Log.e("DataColumnIs",new Gson().toJson(dataColumn));
-                data.add(dataColumn);
-            }while (cursor.moveToNext());
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                do {
+                    ArrayList<NameValuePair> dataColumn = new ArrayList<NameValuePair>();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        dataColumn.add(new BasicNameValuePair(cursor.getColumnName(i), cursor.getString(i)));
+                    }
+                    data.add(dataColumn);
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-        cursor.close();
-        Log.e("Data",new Gson().toJson(data));
         return data;
     }
     public void updateSynced(Uri uri, String dataResult, DataSync dataSync) {

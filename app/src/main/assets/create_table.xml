@@ -24,7 +24,16 @@
         <col_name type="INTEGER">position</col_name>
         <col_name type="TEXT">role_code</col_name>
         <col_name type="INTEGER">is_synced</col_name>
+        <col_name type="TEXT">updated_at</col_name>
+    </table>
 
+
+
+    <table tablename="TBL_TRANSPORTATION_DATA">
+        <col_name type="INTEGER" index="PRIMARY KEY" prop="AUTOINCREMENT">id</col_name>
+        <col_name type="INTEGER">column_id</col_name>
+        <col_name type="INTEGER">name</col_name>
+        <col_name type="TEXT">is_synced</col_name>
     </table>
 
 

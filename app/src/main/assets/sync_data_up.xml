@@ -6,41 +6,9 @@
         service="truckSize"
         unique_column="column_id"
         update_column="is_synced"
-        table_name="tbl_testdata"
+        table_name="Menu_List_Data"
         http_method="2"
-        url="/mobile_api/api/Merchandising/test">
+        url="/mobile_api/api/Merchandising/insertApkMenu">
     </services>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </class>

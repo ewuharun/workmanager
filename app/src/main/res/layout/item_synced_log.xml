@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:weightSum="7"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="7"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="0dp"
+            android:text="INDEX"
+            android:textSize="20sp"
+            android:id="@+id/tvIndex"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1.2"
+            android:layout_height="wrap_content">
+        </TextView>
+
+        <TextView
+            android:layout_width="0dp"
+            android:text="TABLE NAME"
+            android:textSize="20sp"
+            android:id="@+id/tvTableName"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="2.8"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_width="0dp"
+            android:text="ID"
+            android:textSize="20sp"
+            android:id="@+id/tvColumnID"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:layout_width="0dp"
+            android:text="SYNC"
+            android:textSize="20sp"
+            android:id="@+id/tvSyncStatus"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+        </TextView>
+        <ImageView
+            android:layout_width="0dp"
+            android:id="@+id/ivIcon"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:src="@drawable/ic_baseline_call_missed_outgoing_24"
+            android:layout_weight="1"
+            android:layout_height="20dp">
+        </ImageView>
+    </LinearLayout>
+
+
+</LinearLayout>

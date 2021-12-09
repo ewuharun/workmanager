@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -18,11 +17,19 @@ import com.example.workmanagerimplementation.SyncUtils.HelperUtils.JsonParser;
 import com.example.workmanagerimplementation.SyncUtils.HelperUtils.Maths;
 import com.example.workmanagerimplementation.NetWorkUtils.NetworkStream;
 import com.example.workmanagerimplementation.SyncUtils.data.DataContract;
-import com.google.gson.Gson;
 
 import org.apache.http.NameValuePair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Md.harun or rashid on 22,March,2021
@@ -32,56 +39,40 @@ public class DataUpWorker extends Worker {
 
     private DataServices dataServices;
     private ContentResolver contentResolver;
+    private Context context;
+    private ArrayList<String> upTableName;
 
-    //This String is to be used as a key for sending or receiving
-    //data
-    public static final String TASK_DESC="task_desc";
 
     public DataUpWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        this.context = context;
         this.contentResolver=context.getContentResolver();
+        this.upTableName = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public Result doWork() {
 
-        //Getting the Input Data
-        String taskDesc=getInputData().getString(TASK_DESC);
-
-        //Passing the Data into main View
-        Data data=new Data.Builder()
-                .putString(TASK_DESC,"Passing Data")
-                .build();
-
-
         uploadAllDataIntoTheServer();
-        Log.e("Datauploaded",new Gson().toJson(data));
 
-
-
-        return Result.success(data);
+        return Result.success();
     }
 
     private void uploadAllDataIntoTheServer() {
         String service="up";
         String applicationUrl=getApplicationContext().getString(R.string.APPLICATION_URL);
-
         dataServices=new DataServices(getApplicationContext());
         ArrayList<DataSync> dataUpService=dataServices.dataUpServices();
-
         for(DataSync dataSync : dataUpService){
             if (service.equalsIgnoreCase("up")){
-                Log.e("Service Url : ",dataSync.getServiceUrl()+dataSync.getHttpMethod());
 
                 Uri uri= DataContract.getUri(dataSync.getTableName());
-                Log.e("Request Uri : ",uri.toString());
 
                 String url=applicationUrl+dataSync.getServiceUrl();
                 Log.e("Url : ",url);
 
                 String condition = dataSync.getUpdateColumn() + "='0'";
-                Log.e("condition",condition);
 
                 DataSyncModel dataSyncModel=new DataSyncModel(contentResolver);
 
@@ -94,12 +85,12 @@ public class DataUpWorker extends Worker {
                     }
 
                     String dataPut = new NetworkStream().getStream(url, httpMethod, sqliteData);
+                    Log.e("HittedUrl====>",url);
                     String columnId = JsonParser.ifValidJSONGetColumnId(dataPut);
-                    Log.e("RequestResult", dataPut);
+                    Log.e("POST====>", dataPut);
 
 
                     if (columnId != null) {
-                        Log.e("column_id",columnId);
                         dataSyncModel.updateSynced(uri, columnId, dataSync);
                     }
 
